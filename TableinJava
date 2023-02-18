@@ -1,0 +1,872 @@
+package manager;
+
+import java.awt.*;
+import javax.swing.JFrame;
+import drawing.DrawingCanvas;
+
+public class DrawingManager {
+
+
+    // table extends cell    done
+    // sizeable rows        done
+    // frame size           done
+    // font size tied to fontlength     done
+    // row size func        done
+    // theme                done
+
+    public static void main(String[] args) {
+
+        int frameX = 1280;
+        int frameY = 720;
+
+        DrawingCanvas canvas = new DrawingCanvas(frameX, frameY);
+        JFrame frame = new JFrame();
+
+        //SETTING UP FRAME
+        frame.add(canvas);
+        frame.setSize(frameX, frameY);
+
+        //frame.setLayout(null);		//Blank screen
+        frame.setVisible(true);
+        frame.setTitle("Table");
+    }
+
+}  
+
+
+package drawing;
+
+import java.awt.*;
+
+public class Cell extends Rectangle {
+
+    protected Point topleft = new Point();
+    protected int width;
+    protected int height;
+    private int stroke;
+    private Color cell_color;
+    private Color stroke_color;
+    protected String text;
+    private Font font;
+
+    int fontSize;
+    private int fontStyle;
+
+    public Cell() {
+
+    }
+
+    public Cell(int x, int y, int width, int height, Color cell_color, Color stroke_color, int stroke, String text) {
+        super(x, y, width, height, cell_color, stroke_color, stroke);
+        this.text = text;
+        topleft.x = x;
+        topleft.y = y;
+        this.width = width;
+        this.height = height;
+        this.cell_color = cell_color;
+        this.stroke_color = stroke_color;
+        this.stroke = stroke;
+    }
+
+    /**
+     * @param g used for titlebar only
+     *          max ascent used to adjust the string's height
+     */
+    public void paint(Graphics g) {
+
+        this.font = new Font(text, font.BOLD, (int) (this.height * 0.8));
+        //this.font = new Font(text, font.BOLD, (int)(this.height * 0.8) );
+        g.setFont(font);
+
+        FontMetrics fontMetrics = new FontMetrics(font) {
+            @Override
+            public int getAscent() {
+                return super.getAscent();
+            }
+        };
+
+        g.setColor(cell_color);
+        g.fillRect(topleft.x, topleft.y, width, height);
+
+        g.setColor(stroke_color);
+        g.drawString(text, topleft.x + 3, topleft.y + fontMetrics.getAscent());
+
+    }
+
+    /**
+     * @param g uesd in normal cells
+     */
+    public void paintNormal(Graphics g) {
+        //this.font = new Font(text, Font.PLAIN, (int)(this.height * 0.8) );
+        this.font = new Font(text, Font.PLAIN, this.fontSize); //(int) (this.height * 0.3));
+        g.setFont(font);
+
+        FontMetrics fontMetrics = new FontMetrics(font) {
+            @Override
+            public int getAscent() {
+                return super.getAscent();
+            }
+        };
+
+//        int fontX = fontMetrics.getMaxAdvance(); //  /length fonrsize
+//        int fontY = fontMetrics.getAscent();          //largestString / length
+
+        g.setColor(stroke_color);
+        g.fillRect(topleft.x, topleft.y, width, height);
+
+        g.setColor(cell_color);
+        g.fillRect(topleft.x + stroke, topleft.y + stroke, width - (stroke * 2), height - (stroke * 2));
+
+        g.setColor(stroke_color);
+        g.drawString(text, topleft.x + 3, topleft.y + fontMetrics.getAscent());
+    }
+
+    /**
+     * @param g used in the first row of cells which are supposed to be highlighted
+     */
+    public void paintHighlighted(Graphics g) {
+
+//        this.font = new Font(text, Font.PLAIN, (int)(this.height * 0.8) );
+        this.font = new Font(text, Font.PLAIN, this.fontSize);//( fontMetrics.getMaxAdvance(Table.getLargestString()) ) );
+
+        FontMetrics fontMetrics = new FontMetrics(font) {
+            @Override
+            public int getAscent() {
+                return super.getAscent();
+            }
+        };
+
+        g.setFont(font);
+
+        g.setColor(stroke_color);
+        g.fillRect(topleft.x, topleft.y, width, height);
+
+        cell_color = cell_color.brighter();
+        g.setColor(cell_color);
+        g.fillRect(topleft.x + stroke, topleft.y + stroke, width - (stroke * 2), height - (stroke * 2));
+
+        g.setColor(stroke_color);
+        g.drawString(text, topleft.x + 5, topleft.y + fontMetrics.getAscent());
+    }
+
+}
+
+package drawing;
+
+import java.awt.*;
+import java.awt.Rectangle;
+import java.awt.image.ImageObserver;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.text.AttributedCharacterIterator;
+
+public class DrawingCanvas extends Canvas {
+
+    private int frameX;
+    private int frameY;
+
+    public DrawingCanvas(int frameX, int frameY) {
+
+        Graphics g = new Graphics() {
+            @Override
+            public Graphics create() {
+                return null;
+            }
+
+            @Override
+            public void translate(int x, int y) {
+
+            }
+
+            @Override
+            public Color getColor() {
+                return null;
+            }
+
+            @Override
+            public void setColor(Color c) {
+
+            }
+
+            @Override
+            public void setPaintMode() {
+
+            }
+
+            @Override
+            public void setXORMode(Color c1) {
+
+            }
+
+            @Override
+            public Font getFont() {
+                return null;
+            }
+
+            @Override
+            public void setFont(Font font) {
+
+            }
+
+            @Override
+            public FontMetrics getFontMetrics(Font f) {
+                return null;
+            }
+
+            @Override
+            public Rectangle getClipBounds() {
+                return null;
+            }
+
+            @Override
+            public void clipRect(int x, int y, int width, int height) {
+
+            }
+
+            @Override
+            public void setClip(int x, int y, int width, int height) {
+
+            }
+
+            @Override
+            public Shape getClip() {
+                return null;
+            }
+
+            @Override
+            public void setClip(Shape clip) {
+
+            }
+
+            @Override
+            public void copyArea(int x, int y, int width, int height, int dx, int dy) {
+
+            }
+
+            @Override
+            public void drawLine(int x1, int y1, int x2, int y2) {
+
+            }
+
+            @Override
+            public void fillRect(int x, int y, int width, int height) {
+
+            }
+
+            @Override
+            public void clearRect(int x, int y, int width, int height) {
+
+            }
+
+            @Override
+            public void drawRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight) {
+
+            }
+
+            @Override
+            public void fillRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight) {
+
+            }
+
+            @Override
+            public void drawOval(int x, int y, int width, int height) {
+
+            }
+
+            @Override
+            public void fillOval(int x, int y, int width, int height) {
+
+            }
+
+            @Override
+            public void drawArc(int x, int y, int width, int height, int startAngle, int arcAngle) {
+
+            }
+
+            @Override
+            public void fillArc(int x, int y, int width, int height, int startAngle, int arcAngle) {
+
+            }
+
+            @Override
+            public void drawPolyline(int[] xPoints, int[] yPoints, int nPoints) {
+
+            }
+
+            @Override
+            public void drawPolygon(int[] xPoints, int[] yPoints, int nPoints) {
+
+            }
+
+            @Override
+            public void fillPolygon(int[] xPoints, int[] yPoints, int nPoints) {
+
+            }
+
+            @Override
+            public void drawString(String str, int x, int y) {
+
+            }
+
+            @Override
+            public void drawString(AttributedCharacterIterator iterator, int x, int y) {
+
+            }
+
+            @Override
+            public boolean drawImage(Image img, int x, int y, ImageObserver observer) {
+                return false;
+            }
+
+            @Override
+            public boolean drawImage(Image img, int x, int y, int width, int height, ImageObserver observer) {
+                return false;
+            }
+
+            @Override
+            public boolean drawImage(Image img, int x, int y, Color bgcolor, ImageObserver observer) {
+                return false;
+            }
+
+            @Override
+            public boolean drawImage(Image img, int x, int y, int width, int height, Color bgcolor, ImageObserver observer) {
+                return false;
+            }
+
+            @Override
+            public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2, ImageObserver observer) {
+                return false;
+            }
+
+            @Override
+            public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2, Color bgcolor, ImageObserver observer) {
+                return false;
+            }
+
+            @Override
+            public void dispose() {
+
+            }
+        };
+
+        this.frameX = frameX;
+        this.frameY = frameY;
+
+        paint(g);
+    }
+
+    public void paint(Graphics g) {
+
+        setBackground(Color.white);
+
+        Point topLeft = new Point(0, 40);
+
+        //Separating character in the file
+        char separator = ',';
+
+        /*
+        Cell testCell = new Cell(topLeft.x, topLeft.y, 80, 18, Color.CYAN, Color.lightGray, 2, "SAMPLE");
+        testCell.paint(g);
+         */
+
+        File file = new File("C:\\Users\\Shazain\\IdeaProjects\\oopass1\\data.txt");
+
+
+        /**
+         * SET COLORS HERE
+         */
+        Color cell_color = Color.orange;
+        Color stroke_color = Color.red;
+        Color titlebarStroke = Color.darkGray;
+        Color titlebarCell = Color.gray;
+
+
+        /*
+        fix file reading done
+        make paint funcs
+        critical point 9
+        titlebar should be dynamic done
+        first row exceptions    done
+        fix out of bounds done
+        color definition    done
+
+        title bar length done
+        row size    done
+
+         */
+
+        try {
+
+            //Getting the amount of rows and columns
+            int colCount = Table.colCount(file, ',');
+
+//            int colCount = 3;
+            //int rowCount = Table.rowCount(file);
+
+            //Getting the column size according to number of columns
+            int cellWidth = Table.colWidth(colCount, frameX);
+
+    /*       //Exception in case the file has no data
+            if (colCount == 0) {
+                colCount = 5;
+                cellWidth = 100;
+            }       */
+
+            //Making titlebar
+            if (colCount != 0) {
+                TitleBar titleBar = new TitleBar(cellWidth * colCount, titlebarCell, titlebarStroke, file.getName().substring(0, file.getName().length() - 4));
+                titleBar.paint(g);
+            } else {            // in case there is no data
+                TitleBar titleBar = new TitleBar(frameX, titlebarCell, titlebarStroke, "NO DATA");
+                titleBar.paint(g);
+            }
+
+            Table table = new Table(file, separator, frameX, frameY, cell_color, stroke_color);
+
+            int fontSize = table.getFontSize(table.getLargestString(), cellWidth);
+
+            /**
+             * painting all the cells
+             * paintHighlighted is called for the first row
+             * paint called for all other rows
+             */
+            for (int i = 0; i < table.cellArray.length; i++) {
+                for (int j = 0; j < table.cellArray[i].length; j++) {
+                    if (i == 0) {
+                        table.cellArray[i][j].fontSize = fontSize;
+                        table.cellArray[i][j].paintHighlighted(g);
+                    }
+                    table.cellArray[i][j].fontSize = fontSize;
+                    table.cellArray[i][j].paintNormal(g);
+                }
+            }
+
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+
+//        g.setColor(Color.blue);
+//        g.drawLine(0, 0, 1280, 720);
+
+        /*
+        Rectangle rectangle = new Rectangle(400, 300, 80, 20, Color.CYAN, Color.BLUE, 0);
+        rectangle.paint(g);
+        g.setColor(Color.black);
+        g.drawString("SAMPLETEXT", 400, 300);
+         */
+
+    }
+}
+
+package drawing;
+
+public class Point 
+{
+	int x;
+	int y;
+	
+	Point()
+	{
+		x=y=0;
+	}
+	
+	Point(int x, int y)
+	{
+		this.x = x;
+		this.y = y;
+	}
+	
+	Point(Point p)
+	{
+		x = p.x;
+		y = p.y;
+	}
+}
+
+package drawing;
+import java.awt.*;
+
+public class Rectangle 
+{
+	private Point center ;
+	private int width;
+	private int height;
+	private int stroke;
+	private Color button_color;
+	private Color stroke_color;
+	
+	public Rectangle()
+	{
+		
+	}
+
+	//Takes in x and y
+	public Rectangle(int x, int y, int width, int height, Color button_color, Color stroke_color, int stroke)
+	{
+		center = new Point(x, y);
+		this.width = width;
+		this.height = height;
+		this.button_color = button_color;
+		this.stroke_color = stroke_color;
+		this.stroke = stroke;
+	}
+
+	//Takes in one point, same x y
+	public Rectangle(Point p, int width, int height, Color button_color, Color stroke_color, int stroke)
+	{
+		this(p.x, p.y, width, height, button_color, stroke_color, stroke);
+	}
+	
+	public void paint(Graphics g)
+	{
+		g.setColor(stroke_color);
+		g.fillRect(center.x - width/2 - stroke , center.y - height/2 - stroke, width + stroke*2, height + stroke*2);
+		g.setColor(button_color);
+		g.fillRect(center.x - width/2 , center.y - height/2, width, height); 
+	}
+}
+
+package drawing;
+
+import java.awt.Color;
+
+public class Square extends Rectangle {
+	public Square(int x, int y, int side, Color button_color, Color stroke_color, int stroke)
+	{
+		super(x, y, side, side, button_color, stroke_color, stroke);
+	}
+	
+	public Square(Point center, int side, Color button_color, Color stroke_color, int stroke)
+	{
+		super(center, side, side, button_color, stroke_color, stroke);
+	}
+}
+
+
+package drawing;
+
+import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+public class Table extends Cell {
+
+    //private int cellHeight = rowHeight(rowCount(file));
+    Cell[][] cellArray;
+    File file;
+
+    public Table(File file, char separator, int frameX, int frameY, Color cell_color, Color stroke_color) throws FileNotFoundException {
+        this.file = file;
+
+        int colCount = colCount(file, ',');
+        int rowCount = rowCount(file);
+        int cellWidth = colWidth(colCount, frameX);
+        int cellHeight = rowHeight(rowCount, frameY);
+//        String largest = getLargestString(file ,separator);
+
+        //2D array of cell type
+        if (rowCount != 0 && colCount != 0) {
+            cellArray = new Cell[rowCount][colCount];
+        } else {      //in case the file has no data
+            cellArray = new Cell[20][5];
+        }
+
+        //Coordinates of the topleft of the cells
+        super.topleft = new Point(0, 30);
+        // int dX = 0;
+        // int dY = 30;
+
+        Scanner in = new Scanner(file);
+        String line;
+        String[] cellElements;
+        //int elementCount =0;
+
+        /**
+         * This loop goes through the whole text file
+         * It stores each line of the file in the string line
+         * the line is then split by the separator character
+         * the 2d array of cells is then traversed during which each cell is then initialized
+         * super.topleft.x and super.topleft.y are the topleft coordinates of each cell, unique to every cell
+         * they increase according to the width and height of the cells
+         *
+         * the else exists in case the file has no data
+         */
+
+        if (in.hasNextLine()) {
+            while (in.hasNextLine()) {
+                for (int i = 0; i < rowCount; i++) {
+                    line = in.nextLine();
+                    for (int j = 0; j < colCount; j++) {
+                        cellElements = line.split(separator + "");
+                        //int elementCount = 0;   //cellElements[elementCount++]
+                        //for (int eCount = 0; eCount < cellElements.length; eCount++ ) {
+                        cellArray[i][j] = new Cell(super.topleft.x, super.topleft.y, cellWidth, cellHeight, cell_color, stroke_color, 1, cellElements[j]);
+                        //elementCount++;
+                        super.topleft.x = super.topleft.x + cellWidth;
+                        //}
+                    }
+                    //elementCount = 0;
+                    super.topleft.x = 0;
+                    super.topleft.y = super.topleft.y + cellHeight;
+                }
+            }
+        } else {        // IN CASE THERE IS NO DATA
+            for (int i = 0; i < cellArray.length; i++) {
+                for (int j = 0; j < cellArray[i].length; j++) {
+                    if (i == 0) {
+                        cellArray[i][j] = new Cell(super.topleft.x, super.topleft.y, cellWidth, cellHeight, cell_color, stroke_color, 1, "Data");
+                    } else {
+                        cellArray[i][j] = new Cell(super.topleft.x, super.topleft.y, cellWidth, cellHeight, cell_color, stroke_color, 1, "default");
+                    }
+                    //elementCount++;
+                    super.topleft.x = super.topleft.x + cellWidth;
+                }
+                //elementCount = 0;
+                super.topleft.x = 0;
+                super.topleft.y = super.topleft.y + cellHeight;
+            }
+        }
+        in.close();
+    }
+
+    /**
+     * @param file      File to be read fom
+     * @param separator character used as separator in the file
+     * @return the amount of columns according to the separator
+     * @throws FileNotFoundException
+     *                               uses the first line of the file only
+     *                               loops through each character of the line
+     *                               counts the occurrence of the separator character
+     *                               returns the adjusted count
+     */
+
+    public static int colCount(File file, char separator) throws FileNotFoundException {
+
+        Scanner in = new Scanner(file);
+        int colCount = 0;
+
+        if (in.hasNextLine()) {
+            String line = in.nextLine();
+
+            for (int i = 0; i < line.length(); i++) {
+                if (line.charAt(i) == separator) {
+                    colCount++;
+                }
+            }
+            in.close();
+            return colCount + 1;
+        }
+        in.close();
+        return 0;
+    }
+
+    /**
+     * @param file File to be read from
+     * @return number of lines in the file
+     * @throws FileNotFoundException
+     *                               goes through the file until it ends
+     *                               counts each iteration and returns the count
+     */
+    public static int rowCount(File file) throws FileNotFoundException {
+
+        Scanner in = new Scanner(file);
+        int rowCount = 0;
+
+        String line;
+
+        if (in.hasNextLine()) {
+            while (in.hasNextLine()) {
+                rowCount++;
+                line = in.nextLine();
+            }
+            in.close();
+            return rowCount;
+        }
+        in.close();
+        return 0;
+    }
+
+
+    /**
+     * @param colCount The amount of columns to be made
+     * @return The suitable size according to the column count.
+     * <p>
+     * simply divides the frame dimension with the number of columns
+     */
+    public static int colWidth(int colCount, int frameX) {
+        /*
+        //Sets column size in pixels to a suitable value according to the data if it is too large
+        if (colCount > 8) {
+            return 800 / colCount;
+        }
+        //Returns the size with 100px as default length for each column in case data is within the 800px limit
+        return 100;
+        */
+
+//        //Get string bounds and set accordingly
+
+        if (colCount == 0) {
+            return frameX / 5;
+        }
+
+        return frameX / colCount;
+
+    }
+
+    /**
+     * @param rowCount number of rows
+     * @param frameY   the window's height in px
+     * @return the row height accordingly
+     * returns a default
+     */
+    public static int rowHeight(int rowCount, int frameY) {
+        //frameY-30 to adjust for the space taken by the title bar
+        if (rowCount == 0) {
+            return (frameY - 30) / 20;
+        }
+        return frameY / rowCount;
+    }
+
+    /**
+     * @return longest string in the cell 2d array
+     */
+    public String getLargestString() {
+        String str = "";
+
+        for (int i = 0; i < cellArray.length; i++) {
+            for (int j = 0; j < cellArray[i].length; j++) {
+                if (cellArray[i][j].text.length() > str.length()) {
+                    str = cellArray[i][j].text;
+                }
+            }
+        }
+        return str;
+    }
+
+    /**
+     * @param file      text file to read from
+     * @param separator separating character
+     * @return largest string from the file
+     * @throws FileNotFoundException goes through the whole file and finds the largest string
+     */
+
+    public static String getLargestString(File file, char separator) throws FileNotFoundException {
+        Scanner in = new Scanner(file);
+        String largest = "";
+
+        while (in.hasNextLine()) {
+            String line = in.nextLine();
+
+            if (line.equalsIgnoreCase("")) {
+                in.close();
+                return "";
+            }
+            String[] lineArr = line.split("" + separator);
+
+            for (int i = 0; i < lineArr.length; i++) {
+                if (lineArr[i].length() > largest.length()) {
+                    largest = lineArr[i];
+                }
+            }
+        }
+        in.close();
+        return largest;
+    }
+
+
+    /**
+     * @param largestStr largest String of the data
+     * @param cellWidth  cellWidth in px
+     * @return an approximated appropriate font size
+     */
+    public int getFontSize(String largestStr, int cellWidth) {
+
+        //default case / no data
+        if (largestStr.length() == 0 || largestStr.equalsIgnoreCase("default")) {
+            return 14;
+        }
+
+        //Approximating the appropriate fontSize
+        try {
+            fontSize = cellWidth / (largestStr.length() / 2);
+        } catch (Exception e) {
+            fontSize = 12;
+        }
+        return fontSize;
+//
+//        int maxad = fmt.getMaxAdvance();
+//        return fmt.getMaxAdvance()/largestStr.length();
+
+    }
+}
+
+package drawing;
+
+import java.awt.*;
+
+public class TitleBar extends Cell {
+
+    /*
+    makes a rectangle of total width
+    has bold text for title depending on data
+    has a square for button which is at edge / changes dynamically
+
+    titlebar width is dependent on data, height constant
+     */
+
+    /*
+    private int x;
+    private int y;
+    private int width;
+    private int height;
+
+    size cell ddynamic
+    default
+
+
+     */
+
+    Square button;
+
+    /**
+     *
+     * @param cellWidth width in pixels for the titlebar
+     * @param cell_color color of the title bar
+     * @param stroke_color color of the border and text
+     * @param text text in the title bar
+     */
+    public TitleBar (int cellWidth, Color cell_color, Color stroke_color, String text) {
+
+        super(0, 0, cellWidth, 30, cell_color, stroke_color, 4, text);
+        button = new Square(super.width-20, (super.height-16), 16, Color.red, Color.yellow, 1);
+        /*
+        this.x = 0;
+        this.y = 0;
+        this.height = 30;
+        this.width = colSize;
+        */
+    }
+
+    public void paint(Graphics g) {
+        /*Font font = new Font(super.text, 0, 16 );
+        g.setFont(font);
+        g.setColor(Color.gray);   */
+        super.paint(g);
+
+        /**
+         *  calls the paint of its parent class call
+         *  button is a square, its paint function is being called
+         */
+
+        //BUTTON
+        /*g.setColor(Color.red);
+        g.fillRect(super.width, super.height, 25, 25);*/
+        button.paint(g);
+
+    }
+
+}
+
