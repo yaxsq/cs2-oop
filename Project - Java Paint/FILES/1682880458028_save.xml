@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="18.0.2.1" class="java.beans.XMLDecoder">
+ <object class="java.util.ArrayList">
+  <void method="add">
+   <object class="DataStructures.Stack" id="Stack0">
+    <void property="shapes">
+     <void method="add">
+      <object class="Shapes.Circle" id="Circle0">
+       <void property="bottomRight">
+        <object class="java.awt.Point" id="Point0">
+         <void class="java.awt.Point" method="getField">
+          <string>x</string>
+          <void method="set">
+           <object idref="Point0"/>
+           <int>410</int>
+          </void>
+         </void>
+         <void class="java.awt.Point" method="getField">
+          <string>y</string>
+          <void method="set">
+           <object idref="Point0"/>
+           <int>204</int>
+          </void>
+         </void>
+        </object>
+       </void>
+       <void property="strokeColor">
+        <object class="java.awt.Color" id="Color0">
+         <int>0</int>
+         <int>0</int>
+         <int>0</int>
+         <int>255</int>
+        </object>
+       </void>
+       <void property="topLeft">
+        <object class="java.awt.Point" id="Point1">
+         <void class="java.awt.Point" method="getField">
+          <string>x</string>
+          <void method="set">
+           <object idref="Point1"/>
+           <int>287</int>
+          </void>
+         </void>
+         <void class="java.awt.Point" method="getField">
+          <string>y</string>
+          <void method="set">
+           <object idref="Point1"/>
+           <int>135</int>
+          </void>
+         </void>
+        </object>
+       </void>
+       <void id="Integer0" property="stroke"/>
+      </object>
+     </void>
+     <void method="add">
+      <object class="Shapes.Circle">
+       <void property="bottomRight">
+        <object class="java.awt.Point" id="Point2">
+         <void class="java.awt.Point" method="getField">
+          <string>x</string>
+          <void method="set">
+           <object idref="Point2"/>
+           <int>679</int>
+          </void>
+         </void>
+         <void class="java.awt.Point" method="getField">
+          <string>y</string>
+          <void method="set">
+           <object idref="Point2"/>
+           <int>225</int>
+          </void>
+         </void>
+        </object>
+       </void>
+       <void property="strokeColor">
+        <object idref="Color0"/>
+       </void>
+       <void property="topLeft">
+        <object class="java.awt.Point" id="Point3">
+         <void class="java.awt.Point" method="getField">
+          <string>x</string>
+          <void method="set">
+           <object idref="Point3"/>
+           <int>576</int>
+          </void>
+         </void>
+         <void class="java.awt.Point" method="getField">
+          <string>y</string>
+          <void method="set">
+           <object idref="Point3"/>
+           <int>112</int>
+          </void>
+         </void>
+        </object>
+       </void>
+      </object>
+     </void>
+    </void>
+   </object>
+  </void>
+  <void method="add">
+   <object class="DataStructures.Stack" id="Stack1">
+    <void property="shapes">
+     <void method="add">
+      <object class="Shapes.Rectangle" id="Rectangle0">
+       <void class="Shapes.Rectangle" method="getField">
+        <string>topLeft</string>
+        <void method="set">
+         <object idref="Rectangle0"/>
+         <object class="java.awt.Point" id="Point4">
+          <void class="java.awt.Point" method="getField">
+           <string>x</string>
+           <void method="set">
+            <object idref="Point4"/>
+            <int>179</int>
+           </void>
+          </void>
+          <void class="java.awt.Point" method="getField">
+           <string>y</string>
+           <void method="set">
+            <object idref="Point4"/>
+            <int>309</int>
+           </void>
+          </void>
+         </object>
+        </void>
+       </void>
+       <void property="bottomRight">
+        <object class="java.awt.Point" id="Point5">
+         <void class="java.awt.Point" method="getField">
+          <string>x</string>
+          <void method="set">
+           <object idref="Point5"/>
+           <int>850</int>
+          </void>
+         </void>
+         <void class="java.awt.Point" method="getField">
+          <string>y</string>
+          <void method="set">
+           <object idref="Point5"/>
+           <int>500</int>
+          </void>
+         </void>
+        </object>
+       </void>
+       <void property="stroke">
+        <object idref="Integer0"/>
+       </void>
+       <void property="strokeColor">
+        <object idref="Color0"/>
+       </void>
+      </object>
+     </void>
+    </void>
+   </object>
+  </void>
+ </object>
+</java>
